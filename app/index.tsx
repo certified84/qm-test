@@ -7,10 +7,21 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
+  Image,
+  ImageSourcePropType,
 } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import ShareBig from "@/assets/icons/share-big.icons";
 import RemixIcon from "react-native-remix-icon";
+import {
+  avatar1,
+  avatar2,
+  avatar3,
+  avatar4,
+  avatar5,
+  avatar6,
+} from "@/constants/assets";
+import { useNavigation } from "expo-router";
 
 export default function Index() {
   try {
@@ -18,6 +29,8 @@ export default function Index() {
   } catch {
     console.log("Native wind not installed");
   }
+  
+  const navigation = useNavigation()
 
   return (
     <View className="flex-1 bg-white">
@@ -36,7 +49,9 @@ export default function Index() {
           <TouchableOpacity
             activeOpacity={0.5}
             className="bg-white rounded-full w-[50px] h-[50px] flex items-center justify-center border-[#BCDDF4] border-2"
-          ></TouchableOpacity>
+          >
+            <Image className="w-6 h-6" source={avatar1} />
+          </TouchableOpacity>
           <View className="flex-row items-center">
             <TouchableOpacity
               activeOpacity={0.5}
@@ -49,7 +64,9 @@ export default function Index() {
               activeOpacity={0.5}
               className="flex-row p-2 px-3 bg-[#E4F1FA] rounded-3xl items-center"
             >
-              <Text className="text-[#17478B] text-sm font-medium">₦5,000.00</Text>
+              <Text className="text-[#17478B] text-sm font-medium">
+                ₦5,000.00
+              </Text>
               <RemixIcon name="add-circle-line" size={18} color="#17478B" />
             </TouchableOpacity>
 
@@ -63,7 +80,9 @@ export default function Index() {
           <Text className="text-white text-2xl font-semibold">Hello John</Text>
           <HelloWave />
         </View>
-        <Text className="text-white mt-[4px] text-base">Let's play and earn</Text>
+        <Text className="text-white mt-[4px] text-base">
+          Let's play and earn
+        </Text>
       </ImageBackground>
 
       <ScrollView className="absolute w-full top-[230px] px-4 pb-28">
@@ -81,16 +100,24 @@ export default function Index() {
             </TouchableOpacity>
 
             <View className="items-center justify-center my-2">
-              <Text className="text-[#17478B] text-2xl font-bold">Game Prize</Text>
-              <Text className="text-[#17478B] text-5xl font-bold my-2">1,000,000</Text>
-              <Text className="font-medium text-base">Next Game: Tomorrow, 8PM</Text>
+              <Text className="text-[#17478B] text-2xl font-bold">
+                Game Prize
+              </Text>
+              <Text className="text-[#17478B] text-5xl font-bold my-2">
+                1,000,000
+              </Text>
+              <Text className="font-medium text-base">
+                Next Game: Tomorrow, 8PM
+              </Text>
             </View>
 
             <View className="bg-[#17478B] flex-row p-4 mt-8 justify-between items-center">
-              <TouchableOpacity className="bg-white p-2 rounded-3xl px-3">
+              <TouchableOpacity className="bg-white p-2 rounded-3xl px-3" onPress={() => navigation.navigate("game")}>
                 <Text>Join Game</Text>
               </TouchableOpacity>
-              <Text className="text-white font-bold">Entry Fee <Text className="font-normal">₦100.00</Text></Text>
+              <Text className="text-white font-bold">
+                Entry Fee <Text className="font-normal">₦100.00</Text>
+              </Text>
             </View>
           </ImageBackground>
         </View>
@@ -103,13 +130,16 @@ export default function Index() {
               name={item.name}
               price={item.price}
               background={item.background}
+              image={item.image}
             />
           ))}
         </View>
 
         <View className="bg-[#2364AA] p-6 pr-0 mt-8 rounded-[20px] flex-row items-center">
           <View className="flex-1">
-            <Text className="text-white font-bold text-xl">Refer and Earn with your friends</Text>
+            <Text className="text-white font-bold text-xl">
+              Refer and Earn with your friends
+            </Text>
             <Text className="text-white py-2">
               Share with your friends and loved ones to come and play
             </Text>
@@ -130,7 +160,7 @@ export default function Index() {
 interface GamersProps {
   name: string;
   price: string;
-  image?: string;
+  image?: ImageSourcePropType | undefined;
   background: string;
 }
 
@@ -139,7 +169,9 @@ const TopGamer: React.FC<GamersProps> = (props) => (
     <View
       style={{ backgroundColor: props.background }}
       className={`rounded-full w-[65px] h-[65px] flex items-center justify-center`}
-    ></View>
+    >
+      <Image source={props.image} />
+    </View>
     <Text className="font-bold">{props.name}</Text>
     <Text className="text-[##2364AA]">{props.price}</Text>
   </TouchableOpacity>
@@ -150,25 +182,30 @@ const topGamers: GamersProps[] = [
     name: "Joe",
     price: "₦5,000",
     background: "#F2F2F2",
+    image: avatar2,
   },
   {
     name: "Sarah",
     price: "₦5,000",
     background: "#AFF0FF",
+    image: avatar3,
   },
   {
     name: "Hanax",
     price: "₦5,000",
     background: "#C4FBD2",
+    image: avatar4,
   },
   {
     name: "Inioluwa",
     price: "₦5,000",
     background: "#F2F2F2",
+    image: avatar5,
   },
   {
     name: "Liz",
     price: "₦5,000",
     background: "#F2F2F2",
+    image: avatar6,
   },
 ];
