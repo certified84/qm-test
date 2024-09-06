@@ -2,12 +2,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Index from "../";
 import GameScreen from "../screens/game";
 import ResultScreen from "../screens/result";
-import { NavigationContainer } from "@react-navigation/native";
 
 export default function RootLayout() {
   const Stack = createNativeStackNavigator();
   return (
-    // <NavigationContainer>
       <Stack.Navigator initialRouteName="Index">
         <Stack.Screen
           options={{ headerShown: false }}
@@ -25,6 +23,5 @@ export default function RootLayout() {
           component={ResultScreen}
         />
       </Stack.Navigator>
-    // </NavigationContainer>
   );
 }

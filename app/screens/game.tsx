@@ -1,6 +1,6 @@
 import TimerIcon from "@/assets/icons/timer";
 import CirclularProgress from "@/components/CirclularProgress";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ImageBackground,
@@ -11,40 +11,56 @@ import {
   TouchableOpacity,
 } from "react-native";
 import RemixIcon from "react-native-remix-icon";
+import { Buffer } from "buffer";
+import { shuffleArray } from "@/util";
 
 const GameScreen = () => {
-  const navigation = useNavigation();
   const { questions } = useLocalSearchParams();
+  const decodedQuestions = Buffer.from(questions as string, "base64").toString(
+    "utf-8"
+  );
+  const parsedQuestions = JSON.parse(decodedQuestions) as IQuestion[];
 
   const [index, setIndex] = useState(0);
   const progress = new Animated.Value(100);
 
-  const question = questions[index] as unknown as IQuestion;
-
   const [answers, setAnswers] = useState<
     { value: string; isCorrect: boolean }[]
   >([]);
-  const [selected, setSelected] = useState<string | undefined>(undefined);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, []);
+  const [selected, setSelected] = useState<string | undefined>(undefined);
+  const [options, setOptions] = useState(
+    shuffleArray([
+      ...parsedQuestions[index]?.incorrect_answers,
+      parsedQuestions[index]?.correct_answer,
+    ])
+  );
 
   useEffect(() => {
     setSelected(undefined);
+    setOptions(
+      shuffleArray([
+        ...parsedQuestions[index]?.incorrect_answers,
+        parsedQuestions[index]?.correct_answer,
+      ])
+    );
+
+    const timerId = setTimeout(() => {
+      if (index === parsedQuestions.length - 1) {
+        router.push({
+          pathname: "screens/result",
+          params: {
+            answers: Buffer.from(JSON.stringify(answers)).toString("base64"),
+          },
+        });
+        return;
+      }
+      setIndex((prevIndex) => prevIndex + 1);
+    }, 3000);
+
+    return () => clearTimeout(timerId);
   }, [index]);
 
-  useEffect(() => {
-    console.log('Selected: ', selected)
-    if (selected) {
-      setSelected(undefined);
-      navigation.navigate("screens/result");
-    }
-  }, [selected]);
-
-  console.log("route", question);
   return (
     <ImageBackground
       className="flex-1 bg-[#2364AA]"
@@ -69,7 +85,7 @@ const GameScreen = () => {
         <View className="bg-white border-[8px] border-[#00CBF7] p-4 rounded-xl mt-6 items-center">
           <Text className="my-2 font-bold text-2xl">Question {index + 1}</Text>
           <Text className="my-4 text-center text-lg">
-            Who was the First President of the United States?
+            {decodeURIComponent(parsedQuestions[index]?.question)}
           </Text>
         </View>
 
@@ -77,20 +93,32 @@ const GameScreen = () => {
           Choose Correct Option
         </Text>
 
-        <Option
-          onSelect={setSelected}
-          option="George Washington"
-          isCorrect
-          index={0}
-        />
-        <Option
-          onSelect={setSelected}
-          option="George Washington"
-          isCorrect={false}
-          index={1}
-        />
-        <Option onSelect={setSelected} option="George Washington" index={2} />
-        <Option onSelect={setSelected} option="George Washington" index={3} />
+        {options.map((answer, i) => (
+          <Option
+            key={i}
+            onSelect={(text) => {
+              const newAnswers = [
+                ...answers,
+                {
+                  value: text,
+                  isCorrect:
+                    decodeURIComponent(
+                      parsedQuestions[index]?.correct_answer
+                    ) === text,
+                },
+              ];
+              setSelected(text);
+              setAnswers(newAnswers);
+            }}
+            selected={selected}
+            option={decodeURIComponent(answer)}
+            enabled={selected === undefined}
+            correctAnswer={decodeURIComponent(
+              parsedQuestions[index]?.correct_answer
+            )}
+            index={i}
+          />
+        ))}
       </View>
     </ImageBackground>
   );
@@ -100,21 +128,34 @@ export default GameScreen;
 
 interface OptionProps {
   onSelect: (value: string) => void;
+  selected?: string | undefined;
   option: string;
   isCorrect?: boolean | undefined;
+  correctAnswer: string;
   index: number;
+  enabled?: boolean;
 }
 
 const Option: React.FC<OptionProps> = ({
   onSelect,
   option,
-  isCorrect,
+  selected,
+  // isCorrect,
   index,
+  correctAnswer,
+  enabled = true,
 }) => {
+  const isCorrect =
+    selected === undefined || selected !== option
+      ? undefined
+      : decodeURIComponent(correctAnswer) === option;
   return (
     <TouchableOpacity
+      disabled={!enabled}
       activeOpacity={0.5}
-      onPress={() => onSelect(option)}
+      onPress={() => {
+        onSelect(option);
+      }}
       className="flex-row items-center justify-between mt-4 rounded-[100px] p-5 px-8"
       style={{
         borderWidth: isCorrect !== undefined ? 4 : 0,

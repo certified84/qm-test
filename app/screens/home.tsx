@@ -22,9 +22,10 @@ import {
   avatar5,
   avatar6,
 } from "@/constants/assets";
-import { Link, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { fetchQuestionsAPI } from "@/api/questions";
+import { Buffer } from "buffer";
 
 export default function HomeScreen() {
   try {
@@ -33,23 +34,21 @@ export default function HomeScreen() {
     console.log("Native wind not installed");
   }
 
-  const navigation = useNavigation();
-
   const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState<IQuestion[]>([]);
 
   const fetchQuestions = async () => {
-    if (questions.length > 0) {
-      navigation.navigate("screens/game", { questions: questions });
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await fetchQuestionsAPI();
       if (response.status === "success") {
-        setQuestions(response?.results || []);
-        navigation.navigate("screens/game", { questions: response || [] });
+        router.push({
+          pathname: "screens/game",
+          params: {
+            questions: Buffer.from(JSON.stringify(response?.results)).toString(
+              "base64"
+            ),
+          },
+        });
       }
     } catch (error) {
       console.log(error);

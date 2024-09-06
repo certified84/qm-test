@@ -19,8 +19,6 @@ export const fetchQuestionsAPI = async () => {
 
   const data = await response.json();
 
-//   console.log("data", data);
-
   return {
     status: response.status === 200 ? "success" : "error",
     message: 'Questions fetched successfully',
