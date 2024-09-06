@@ -56,7 +56,7 @@ const GameScreen = () => {
         return;
       }
       setIndex((prevIndex) => prevIndex + 1);
-    }, 3000);
+    }, 10000);
 
     return () => clearTimeout(timerId);
   }, [index]);
