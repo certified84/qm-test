@@ -4,7 +4,7 @@ const GameScreen = () => {
   return (
     <ImageBackground
       className="flex-1 bg-[#2364AA]"
-      source={require("../assets/images/background.png")}
+      source={require("../../assets/images/background.png")}
     ></ImageBackground>
   );
 };
