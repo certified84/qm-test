@@ -1,7 +1,7 @@
 import TimerIcon from "@/assets/icons/timer";
 import CirclularProgress from "@/components/CirclularProgress";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ImageBackground,
   View,
@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import RemixIcon from "react-native-remix-icon";
 
-const GameScreen = ({ route }) => {
+const GameScreen = () => {
+  const navigation = useNavigation();
   const { questions } = useLocalSearchParams();
 
   const [index, setIndex] = useState(0);
@@ -25,12 +26,22 @@ const GameScreen = ({ route }) => {
   >([]);
   const [selected, setSelected] = useState<string | undefined>(undefined);
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, []);
+
   useEffect(() => {
     setSelected(undefined);
   }, [index]);
 
   useEffect(() => {
-    // setSelected(undefined);
+    console.log('Selected: ', selected)
+    if (selected) {
+      setSelected(undefined);
+      navigation.navigate("screens/result");
+    }
   }, [selected]);
 
   console.log("route", question);
@@ -103,6 +114,7 @@ const Option: React.FC<OptionProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={0.5}
+      onPress={() => onSelect(option)}
       className="flex-row items-center justify-between mt-4 rounded-[100px] p-5 px-8"
       style={{
         borderWidth: isCorrect !== undefined ? 4 : 0,
