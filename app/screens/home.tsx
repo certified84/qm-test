@@ -110,7 +110,11 @@ export default function HomeScreen() {
         </Text>
       </ImageBackground>
 
-      <ScrollView className="absolute w-full top-[230px] px-4 pb-28">
+      <ScrollView
+        style={{ height: "80%" }}
+        alwaysBounceVertical={false}
+        className="absolute w-full top-[230px] px-4"
+      >
         <View className="shadow-md">
           <ImageBackground
             className=" bg-white rounded-3xl overflow-hidden"
@@ -182,6 +186,8 @@ export default function HomeScreen() {
           </View>
           <ShareBig style={{ flex: 1 }} />
         </View>
+
+        <View className="mt-[150px]"/>
       </ScrollView>
     </View>
   );

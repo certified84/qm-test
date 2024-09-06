@@ -16,6 +16,7 @@ import WalletIcon from "@/assets/icons/tab/wallet";
 import StoreIcon from "@/assets/icons/tab/store";
 import TrophyIcon from "@/assets/icons/tab/trophy";
 import SettingsIcon from "@/assets/icons/tab/settings";
+import OtherScreen from "./screens/other";
 
 const Tab = createBottomTabNavigator();
 
@@ -64,7 +65,6 @@ const WalletOptions: BottomTabNavigationOptions = {
     }
     return <WalletIcon />;
   },
-  headerShown: false,
 };
 
 const StoreOptions: BottomTabNavigationOptions = {
@@ -88,7 +88,6 @@ const StoreOptions: BottomTabNavigationOptions = {
     }
     return <StoreIcon />;
   },
-  headerShown: false,
 };
 
 const LeaderBoardOptions: BottomTabNavigationOptions = {
@@ -112,7 +111,6 @@ const LeaderBoardOptions: BottomTabNavigationOptions = {
     }
     return <TrophyIcon />;
   },
-  headerShown: false,
 };
 
 const SettingsOptions: BottomTabNavigationOptions = {
@@ -136,7 +134,6 @@ const SettingsOptions: BottomTabNavigationOptions = {
     }
     return <SettingsIcon />;
   },
-  headerShown: false,
 };
 
 export default function Index() {
@@ -179,25 +176,25 @@ export default function Index() {
       <Tab.Screen
         name="Wallet"
         options={WalletOptions}
-        component={HomeScreen}
+        component={OtherScreen}
         initialParams={{ reload: false }}
       />
       <Tab.Screen
         name="Store"
         options={StoreOptions}
-        component={HomeScreen}
+        component={OtherScreen}
         initialParams={{ reload: false }}
       />
       <Tab.Screen
         name="LeaaderBoard"
         options={LeaderBoardOptions}
-        component={HomeScreen}
+        component={OtherScreen}
         initialParams={{ reload: false }}
       />
       <Tab.Screen
         name="Settings"
         options={SettingsOptions}
-        component={HomeScreen}
+        component={OtherScreen}
         initialParams={{ reload: false }}
       />
     </Tab.Navigator>
