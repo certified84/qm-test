@@ -9,6 +9,7 @@ import {
   ScrollView,
   Image,
   ImageSourcePropType,
+  ActivityIndicator,
 } from "react-native";
 import { HelloWave } from "@/components/HelloWave";
 import ShareBig from "@/assets/icons/share-big.icons";
@@ -21,7 +22,9 @@ import {
   avatar5,
   avatar6,
 } from "@/constants/assets";
-import { useNavigation } from "expo-router";
+import { Link, useNavigation } from "expo-router";
+import { useState } from "react";
+import { fetchQuestionsAPI } from "@/api/questions";
 
 export default function HomeScreen() {
   try {
@@ -29,8 +32,31 @@ export default function HomeScreen() {
   } catch {
     console.log("Native wind not installed");
   }
-  
-  const navigation = useNavigation()
+
+  const navigation = useNavigation();
+
+  const [loading, setLoading] = useState(false);
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
+
+  const fetchQuestions = async () => {
+    if (questions.length > 0) {
+      navigation.navigate("screens/game", { questions: questions });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetchQuestionsAPI();
+      if (response.status === "success") {
+        setQuestions(response?.results || []);
+        navigation.navigate("screens/game", { questions: response || [] });
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+    setLoading(false);
+  };
 
   return (
     <View className="flex-1 bg-white">
@@ -112,8 +138,12 @@ export default function HomeScreen() {
             </View>
 
             <View className="bg-[#17478B] flex-row p-4 mt-8 justify-between items-center">
-              <TouchableOpacity className="bg-white p-2 rounded-3xl px-3" onPress={() => navigation.navigate("screens/game")}>
+              <TouchableOpacity
+                className="flex-row items-center gap-2 bg-white p-2 rounded-3xl px-3"
+                onPress={fetchQuestions}
+              >
                 <Text>Join Game</Text>
+                {loading && <ActivityIndicator color={"#17478B"} />}
               </TouchableOpacity>
               <Text className="text-white font-bold">
                 Entry Fee <Text className="font-normal">₦100.00</Text>
@@ -123,6 +153,7 @@ export default function HomeScreen() {
         </View>
 
         <Text className="mt-6 font-bold text-lg">Top Gamers of the day</Text>
+
         <View className="flex-row justify-between mt-5">
           {topGamers.map((item, index) => (
             <TopGamer
