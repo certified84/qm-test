@@ -1,5 +1,143 @@
+import "../global.css";
 import { verifyInstallation } from "nativewind";
-import { Text, View, ImageBackground, Image, StatusBar } from "react-native";
+import {
+  Text,
+  View,
+  Platform,
+  StyleSheet,
+} from "react-native";
+import {
+  BottomTabNavigationOptions,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
+import HomeScreen from "./screens/home";
+import HomeIcon from "@/assets/icons/tab/home";
+import WalletIcon from "@/assets/icons/tab/wallet";
+import StoreIcon from "@/assets/icons/tab/store";
+import TrophyIcon from "@/assets/icons/tab/trophy";
+import SettingsIcon from "@/assets/icons/tab/settings";
+
+const Tab = createBottomTabNavigator();
+
+const HomeOptions: BottomTabNavigationOptions = {
+  tabBarLabel: ({ focused }) => (
+    <Text
+      className="font-bold line-clamp-1"
+      style={{ color: focused ? "#00CBF7" : "white" }}
+    >
+      Home
+    </Text>
+  ),
+  tabBarIcon: ({ focused }) => {
+    if (focused) {
+      return (
+        <View className="border-4 border-white" style={styles.fabIconContainer}>
+          <View style={styles.fabIconInnerContainer}>
+            <HomeIcon />
+          </View>
+        </View>
+      );
+    }
+    return <HomeIcon />;
+  },
+  headerShown: false,
+};
+
+const WalletOptions: BottomTabNavigationOptions = {
+  tabBarLabel: ({ focused }) => (
+    <Text
+      className="font-bold line-clamp-1"
+      style={{ color: focused ? "#00CBF7" : "white" }}
+    >
+      Wallet
+    </Text>
+  ),
+  tabBarIcon: ({ focused }) => {
+    if (focused) {
+      return (
+        <View className="border-4 border-white" style={styles.fabIconContainer}>
+          <View style={styles.fabIconInnerContainer}>
+            <WalletIcon />
+          </View>
+        </View>
+      );
+    }
+    return <WalletIcon />;
+  },
+  headerShown: false,
+};
+
+const StoreOptions: BottomTabNavigationOptions = {
+  tabBarLabel: ({ focused }) => (
+    <Text
+      className="font-bold line-clamp-1"
+      style={{ color: focused ? "#00CBF7" : "white" }}
+    >
+      Store
+    </Text>
+  ),
+  tabBarIcon: ({ focused }) => {
+    if (focused) {
+      return (
+        <View className="border-4 border-white" style={styles.fabIconContainer}>
+          <View style={styles.fabIconInnerContainer}>
+            <StoreIcon />
+          </View>
+        </View>
+      );
+    }
+    return <StoreIcon />;
+  },
+  headerShown: false,
+};
+
+const LeaderBoardOptions: BottomTabNavigationOptions = {
+  tabBarLabel: ({ focused }) => (
+    <Text
+      className="font-bold line-clamp-1"
+      style={{ color: focused ? "#00CBF7" : "white" }}
+    >
+      LeaderBoard
+    </Text>
+  ),
+  tabBarIcon: ({ focused }) => {
+    if (focused) {
+      return (
+        <View className="border-4 border-white" style={styles.fabIconContainer}>
+          <View style={styles.fabIconInnerContainer}>
+            <TrophyIcon />
+          </View>
+        </View>
+      );
+    }
+    return <TrophyIcon />;
+  },
+  headerShown: false,
+};
+
+const SettingsOptions: BottomTabNavigationOptions = {
+  tabBarLabel: ({ focused }) => (
+    <Text
+      className="font-bold line-clamp-1"
+      style={{ color: focused ? "#00CBF7" : "white" }}
+    >
+      Settings
+    </Text>
+  ),
+  tabBarIcon: ({ focused }) => {
+    if (focused) {
+      return (
+        <View className="border-4 border-white" style={styles.fabIconContainer}>
+          <View style={styles.fabIconInnerContainer}>
+            <SettingsIcon />
+          </View>
+        </View>
+      );
+    }
+    return <SettingsIcon />;
+  },
+  headerShown: false,
+};
 
 export default function Index() {
   try {
@@ -9,43 +147,87 @@ export default function Index() {
   }
 
   return (
-    <View style={{ flex: 1 }} className="flex-1 bg-red-600">
-      <ImageBackground
-        style={{
-          height: "35%",
-          borderBottomRightRadius: 60,
-          backgroundColor: "#BCDDF4",
-        }}
-        // className="flex-1 h-full bg-red"
-        source={require("../assets/images/background.png")}
-        resizeMode="cover"
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 16,
-            marginTop: StatusBar.currentHeight
-              ? StatusBar.currentHeight + 50
-              : 100,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              borderWidth: 2,
-              borderColor: "#BCDDF4",
-            }}
-          ></View>
-          <View style={{ flexDirection: 'row' }}>
-
-          </View>
-        </View>
-      </ImageBackground>
-    </View>
+    <Tab.Navigator
+      initialRouteName="Home"
+      sceneContainerStyle={{
+        backgroundColor: "white",
+      }}
+      screenOptions={{
+        tabBarStyle: {
+          borderColor: "white",
+          height: 70,
+          width: "100%",
+          paddingTop: 15,
+          paddingHorizontal: 10,
+          paddingBottom: 18,
+          elevation: 5,
+          shadowColor: "gray",
+          backgroundColor: "#17478B",
+        },
+        tabBarHideOnKeyboard: Platform.OS !== "ios",
+        tabBarLabel: undefined,
+        // headerShown: false,
+        headerStyle: { backgroundColor: "white" },
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        options={HomeOptions}
+        component={HomeScreen}
+        initialParams={{ reload: false }}
+      />
+      <Tab.Screen
+        name="Wallet"
+        options={WalletOptions}
+        component={HomeScreen}
+        initialParams={{ reload: false }}
+      />
+      <Tab.Screen
+        name="Store"
+        options={StoreOptions}
+        component={HomeScreen}
+        initialParams={{ reload: false }}
+      />
+      <Tab.Screen
+        name="LeaaderBoard"
+        options={LeaderBoardOptions}
+        component={HomeScreen}
+        initialParams={{ reload: false }}
+      />
+      <Tab.Screen
+        name="Settings"
+        options={SettingsOptions}
+        component={HomeScreen}
+        initialParams={{ reload: false }}
+      />
+    </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  fabIconContainer: {
+    borderRadius: 200,
+    position: "absolute",
+    bottom: 4,
+    borderColor: "white",
+    borderWidth: 8,
+    // borderTopWidth: 0,
+  },
+  fabIconInnerContainer: {
+    // padding: 12,
+    width: 45,
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#2A75BC",
+    borderRadius: 100,
+    // shadowColor: "#000", 
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 3,
+    // elevation: 5,
+  },
+  fabIcon: {
+    position: "relative",
+  },
+});
