@@ -44,12 +44,16 @@ const ResultScreen = () => {
         <View className="bg-[#DFF9FF] border-[8px] border-[#00CBF7] p-4 rounded-xl mt-6 items-center">
           <Text>Total time used:01:00</Text>
           <View className="flex-row items-center justify-center mt-3">
-            <Text className="font-semibold text-lg mr-2">{correct} Correct</Text>
+            <Text className="font-semibold text-lg mr-2">
+              {correct} Correct
+            </Text>
             <RemixIcon name="checkbox-circle-fill" color="#00C449" />
 
             <View className="h-10 w-0.5 bg-[#5A5A5A] mx-2" />
 
-            <Text className="font-semibold text-lg mr-2">{inCorrect} Incorrect</Text>
+            <Text className="font-semibold text-lg mr-2">
+              {inCorrect + (10 - parsedAnswers.length)} Incorrect
+            </Text>
             <RemixIcon name="close-circle-fill" color="#F9474B" />
           </View>
         </View>

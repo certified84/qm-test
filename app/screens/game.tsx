@@ -1,7 +1,7 @@
 import TimerIcon from "@/assets/icons/timer";
 import CirclularProgress from "@/components/CirclularProgress";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   ImageBackground,
   View,
@@ -13,6 +13,7 @@ import {
 import RemixIcon from "react-native-remix-icon";
 import { Buffer } from "buffer";
 import { shuffleArray } from "@/util";
+import CircularProgress from "react-native-circular-progress-indicator";
 
 const GameScreen = () => {
   const { questions } = useLocalSearchParams();
@@ -22,7 +23,22 @@ const GameScreen = () => {
   const parsedQuestions = JSON.parse(decodedQuestions) as IQuestion[];
 
   const [index, setIndex] = useState(0);
-  const progress = new Animated.Value(100);
+  // const progress = useRef(new Animated.Value(100)).current;
+
+  // const startAnimation = () => {
+  //   progress.setValue(100);
+  //   Animated.timing(progress, {
+  //     toValue: 0,
+  //     duration: 10000,
+  //     useNativeDriver: false,
+  //   }).start();
+  // };
+
+  // const animatedProgressValue = progress.interpolate({
+  //   inputRange: [0, 100],
+  //   outputRange: [1, 10],
+  // });
+  const [progress, setProgress] = useState(10);
 
   const [answers, setAnswers] = useState<
     { value: string; isCorrect: boolean }[]
@@ -38,6 +54,7 @@ const GameScreen = () => {
 
   useEffect(() => {
     setSelected(undefined);
+    setProgress(10);
     setOptions(
       shuffleArray([
         ...parsedQuestions[index]?.incorrect_answers,
@@ -45,7 +62,7 @@ const GameScreen = () => {
       ])
     );
 
-    const timerId = setTimeout(() => {
+    const intervalId = setInterval(() => {
       if (index === parsedQuestions.length - 1) {
         router.push({
           pathname: "screens/result",
@@ -53,12 +70,20 @@ const GameScreen = () => {
             answers: Buffer.from(JSON.stringify(answers)).toString("base64"),
           },
         });
+        clearInterval(intervalId);
         return;
       }
       setIndex((prevIndex) => prevIndex + 1);
     }, 10000);
 
-    return () => clearTimeout(timerId);
+    const timerId = setInterval(() => {
+      setProgress((prevProgress) => prevProgress - 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+      clearInterval(timerId);
+    };
   }, [index]);
 
   return (
@@ -76,9 +101,16 @@ const GameScreen = () => {
       >
         <View className="flex-row items-center">
           <TimerIcon />
-          <Text className="text-white">00.00.40</Text>
-          <View className="absolute left-1/2">
-            <CirclularProgress progress={progress} />
+          <Text className="text-white">00.00.{progress}</Text>
+          <View className="absolute left-[43%] items-center">
+            <CircularProgress
+              value={(progress / 10) * 100}
+              activeStrokeWidth={12}
+              progressValueColor={"#ecf0f1"}
+              radius={20}
+              showProgressValue={false}
+            />
+            <Text className="text-white absolute top-[30%]">{progress}</Text>
           </View>
         </View>
 
